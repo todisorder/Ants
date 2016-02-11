@@ -3,6 +3,8 @@ Ants IBM 04:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 2 fev 2016
 
+—> Havia erro na def. da func. Angle, argumentos 
+   trocados no atan2.
 -> No anterior fiz sem relaxação, mas agora vou 
 voltar à relaxação.
 
