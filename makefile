@@ -1,4 +1,4 @@
-Version=04
+Version=-GIT
 OBJ=AntsIBM$(Version).o
 TESTES_OBJS=Testes.o Dados.o Tridiagonal.o Vectores.o Solver_SCL.o 
 CFLAGS=-Wall -g

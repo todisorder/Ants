@@ -4,10 +4,10 @@
 # dt = 0.01
 #	
 ------------------------------------------------------
-Sensing Area Radius (cm)       0.4
-Sensing Area Radius (X_hat)    0.231214
+Sensing Area Radius (cm)       0.2
+Sensing Area Radius (X_hat)    0.115607
 Sensing Half Angle             Pi/2
-Lambda                         60.6764
+Lambda                         970.822
 ------------------------------------------------------
 ------------------------------------------------------
  
