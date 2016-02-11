@@ -23,7 +23,7 @@ normal_distribution<double> Normal(0.,1.);      //2.
 // Normal(mean,stddev)
 // Usage:
 // double number = Normal(generator);
-static double const Turn_off_random = 0.1;
+static double const Turn_off_random = 0.0;
 //  ^^^ 0. = No Random!
 
 
@@ -46,21 +46,24 @@ static double const tau = .5;         //    0.5
 static double const TAU = tau / t_hat_in_seconds;         //
 
 //  Sensing area radius em centimetros
-static double const SensingAreaRadius = .2;         //  .5
+static double const SensingAreaRadius = .4;         //  .5
 
 //  Sensing area radius em X_hat
 static double const SENSING_AREA_RADIUS = SensingAreaRadius / X_hat_in_cm;         //
 
 //  Sensing Area Half Angle
-static double const SensingAreaHalfAngle = Pi/2.;         //
+static double const SensingAreaHalfAngle = Pi/1.0001;         //
 
 //  Converter quantidade de feromona numa taxa (velocidade sem espaço). Lambda é 1/(feromona * tempo).
 //  A quantidade padrão de feromona dá uma taxa de Lambda / t_hat.
 //  Por exemplo, se quando deteta uma quantidade de feromona = 1 ela anda a 2 * X_hat por t_hat, então
 //  Lambda seria 2 * (3/2) * (sen theta * ell(em X_hat)^3)^(-1),
 //  para que a Velocidade Desejada seja 2. X_hat/t_hat.
-static double const Lambda = 1.* (3./2.) *(1./(sin(SensingAreaHalfAngle) * pow(SENSING_AREA_RADIUS,3.)));        //
-
+//static double const Lambda = .5* (3./2.) *(1./(sin(SensingAreaHalfAngle) * pow(SENSING_AREA_RADIUS,3.)));        //
+//  Lambda versao sem sin():
+//static double const Lambda = .5* (3./2.) *(1./(1. * pow(SENSING_AREA_RADIUS,3.)));        //
+//  Lambda versao só com a media do integral
+static double const Lambda = .5* (3./2.) *(1./(SensingAreaHalfAngle * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //////////////////////////////////////////////////////
 // End Ant parameters
@@ -119,7 +122,7 @@ int ChangedSide = 0;
 /////////////////////////////////////////////////
 void InitialPosition (double& Xini, double& Yini)
 {
-    Xini = -.0;
+    Xini = -1.;
     Yini = 0.;
 }
 /////////////////////////////////////////////////
@@ -138,8 +141,8 @@ void InitialPosition (double& Xini, double& Yini)
 /////////////////////////////////////////////////
 void InitialVelocity (double& Vx, double& Vy)
 {
-    Vx = -.1;
-    Vy = -.2;
+    Vx = .1;
+    Vy = .2;
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -414,7 +417,7 @@ double Dmais(double dx,double uj, double ujj){
 // Print Info
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
-void PrintInfo(double delta_t, string COMM){
+void PrintInfo(double delta_t, string COMM, int tt){
     
     ofstream tempfile;
     tempfile.open("DataUsed.txt");
@@ -425,6 +428,7 @@ void PrintInfo(double delta_t, string COMM){
     tempfile << "#############################################################"<<endl;
     tempfile <<"# dt = "<< delta_t<< endl;
     tempfile <<"#" << "\t" << COMM <<endl;
+    tempfile <<"#" << "Iter: " << tt <<endl;
     tempfile << "------------------------------------------------------" << endl;
     tempfile << "Sensing Area Radius (cm)       " << SensingAreaRadius << endl;
     tempfile << "Sensing Area Radius (X_hat)    " << SENSING_AREA_RADIUS << endl;
@@ -745,7 +749,7 @@ int main (void){
     cout << "delta_t = " << delta_t<< endl;
     cout << "Num Iter = " << tt << endl;
 
-    PrintInfo(delta_t,COMM);
+    PrintInfo(delta_t,COMM,tt);
     
     /////////////////////////////
     // Escrever resultados

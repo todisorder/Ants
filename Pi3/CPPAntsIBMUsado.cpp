@@ -59,8 +59,11 @@ static double const SensingAreaHalfAngle = Pi/3.;         //
 //  Por exemplo, se quando deteta uma quantidade de feromona = 1 ela anda a 2 * X_hat por t_hat, ent‹o
 //  Lambda seria 2 * (3/2) * (sen theta * ell(em X_hat)^3)^(-1),
 //  para que a Velocidade Desejada seja 2. X_hat/t_hat.
-static double const Lambda = .5* (3./2.) *(1./(sin(SensingAreaHalfAngle) * pow(SENSING_AREA_RADIUS,3.)));        //
-
+//static double const Lambda = .5* (3./2.) *(1./(sin(SensingAreaHalfAngle) * pow(SENSING_AREA_RADIUS,3.)));        //
+//  Lambda versao sem sin():
+//static double const Lambda = .5* (3./2.) *(1./(1. * pow(SENSING_AREA_RADIUS,3.)));        //
+//  Lambda versao s— com a media do integral
+static double const Lambda = .5* (3./2.) *(1./(SensingAreaHalfAngle * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //////////////////////////////////////////////////////
 // End Ant parameters
@@ -414,7 +417,7 @@ double Dmais(double dx,double uj, double ujj){
 // Print Info
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
-void PrintInfo(double delta_t, string COMM){
+void PrintInfo(double delta_t, string COMM, int tt){
     
     ofstream tempfile;
     tempfile.open("DataUsed.txt");
@@ -425,6 +428,7 @@ void PrintInfo(double delta_t, string COMM){
     tempfile << "#############################################################"<<endl;
     tempfile <<"# dt = "<< delta_t<< endl;
     tempfile <<"#" << "\t" << COMM <<endl;
+    tempfile <<"#" << "Iter: " << tt <<endl;
     tempfile << "------------------------------------------------------" << endl;
     tempfile << "Sensing Area Radius (cm)       " << SensingAreaRadius << endl;
     tempfile << "Sensing Area Radius (X_hat)    " << SENSING_AREA_RADIUS << endl;
@@ -745,7 +749,7 @@ int main (void){
     cout << "delta_t = " << delta_t<< endl;
     cout << "Num Iter = " << tt << endl;
 
-    PrintInfo(delta_t,COMM);
+    PrintInfo(delta_t,COMM,tt);
     
     /////////////////////////////
     // Escrever resultados
