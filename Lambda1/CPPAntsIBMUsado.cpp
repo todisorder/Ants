@@ -52,20 +52,20 @@ static double const SensingAreaRadius = .4;         //  .5
 static double const SENSING_AREA_RADIUS = SensingAreaRadius / X_hat_in_cm;         //
 
 //  Sensing Area Half Angle
-static double const SensingAreaHalfAngle = Pi/2.;         //
+static double const SensingAreaHalfAngle = Pi/4.;         //
 
 //  Converter quantidade de feromona numa taxa (velocidade sem espaço). Lambda é 1/(feromona * tempo).
 //  A quantidade padrão de feromona dá uma taxa de Lambda / t_hat.
 //  Por exemplo, se quando deteta uma quantidade de feromona = 1 ela anda a 2 * X_hat por t_hat, então
 //  Lambda seria 2 * (3/2) * (sen theta * ell(em X_hat)^3)^(-1),
 //  para que a Velocidade Desejada seja 2. X_hat/t_hat.
-//static double const Lambda = .5* (3./2.) *(1./(sin(SensingAreaHalfAngle) * pow(SENSING_AREA_RADIUS,3.)));        //
+static double const Lambda = .5* (3./2.) *(1./(sin(SensingAreaHalfAngle) * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //  Lambda versao sem sin():
 //static double const Lambda = .5* (3./2.) *(1./(1. * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //  Lambda versao só com a media do integral
-static double const Lambda = .5* (3./2.) *(1./(SensingAreaHalfAngle * pow(SENSING_AREA_RADIUS,3.)));        //
+//static double const Lambda = .5* (3./2.) *(1./(SensingAreaHalfAngle * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //////////////////////////////////////////////////////
 // End Ant parameters

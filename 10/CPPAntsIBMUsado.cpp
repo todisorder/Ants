@@ -59,13 +59,13 @@ static double const SensingAreaHalfAngle = Pi/2.;         //
 //  Por exemplo, se quando deteta uma quantidade de feromona = 1 ela anda a 2 * X_hat por t_hat, ent‹o
 //  Lambda seria 2 * (3/2) * (sen theta * ell(em X_hat)^3)^(-1),
 //  para que a Velocidade Desejada seja 2. X_hat/t_hat.
-//static double const Lambda = .5* (3./2.) *(1./(sin(SensingAreaHalfAngle) * pow(SENSING_AREA_RADIUS,3.)));        //
+static double const Lambda = .5* (3./2.) *(1./(sin(SensingAreaHalfAngle) * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //  Lambda versao sem sin():
 //static double const Lambda = .5* (3./2.) *(1./(1. * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //  Lambda versao s— com a media do integral
-static double const Lambda = .5* (3./2.) *(1./(SensingAreaHalfAngle * pow(SENSING_AREA_RADIUS,3.)));        //
+//static double const Lambda = .5* (3./2.) *(1./(SensingAreaHalfAngle * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //////////////////////////////////////////////////////
 // End Ant parameters
