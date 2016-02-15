@@ -1,4 +1,4 @@
-make &&
+make -f makefile222 &&
 touch ./U_SoPaNaoChatearComErrosDoRM.txt
 rm U_*;
 

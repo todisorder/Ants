@@ -722,14 +722,14 @@ int main (void){
         if (i%100 == 0) {   //1000
             cout << "Iter restantes: " << tt - i << endl;
             
-//            if (isnan(AntXposOld)) {
-//                cout <<  "NAN numa iter menor que "<< i << endl;
-//                system("osascript -e 'tell app \"System Events\" to display dialog \"Abort!!!\" with icon 0 with title \"Abort!\" '");
-//                system("sh plot-png.sh");
-//                isAbort = 1;
-//                //abort();
-//                break;
-//            }
+            if (isnan(AntXposOld)) {
+                cout <<  "NAN numa iter menor que "<< i << endl;
+                system("osascript -e 'tell app \"System Events\" to display dialog \"Abort!!!\" with icon 0 with title \"Abort!\" '");
+                system("sh plot-png.sh");
+                isAbort = 1;
+                //abort();
+                break;
+            }
             
         }
         if (ChangedSide == 1) {

@@ -1,4 +1,3 @@
-CC=g++
 Version=-GIT
 OBJ=AntsIBM$(Version).o
 CFLAGS=-Wall -g -std=c++11
