@@ -52,7 +52,7 @@ static double const SensingAreaRadius = .4;         //  .5
 static double const SENSING_AREA_RADIUS = SensingAreaRadius / X_hat_in_cm;         //
 
 //  Sensing Area Half Angle
-static double const SensingAreaHalfAngle = Pi/4.;         //
+static double const SensingAreaHalfAngle = Pi/2.5;         //
 
 //  Converter quantidade de feromona numa taxa (velocidade sem espaço). Lambda é 1/(feromona * tempo).
 //  A quantidade padrão de feromona dá uma taxa de Lambda / t_hat.
