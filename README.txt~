@@ -1,5 +1,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Ants IBM GitHub:
+Branch Weber
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+26 fev 2016
+
+Para respeitar a lei de Weber,
+vou introduzir uma normalização
+pelo integral da feromona.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Ants IBM GitHub:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 11 fev 2016
 

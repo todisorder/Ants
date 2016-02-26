@@ -23,7 +23,7 @@ normal_distribution<double> Normal(0.,1.);      //2.
 // Normal(mean,stddev)
 // Usage:
 // double number = Normal(generator);
-static double const Turn_off_random = .03;
+static double const Turn_off_random = 0.0;
 //  ^^^ 0. = No Random!
 
 //	Parameter for Regularizing Function

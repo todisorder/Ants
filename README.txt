@@ -8,6 +8,8 @@ Para respeitar a lei de Weber,
 vou introduzir uma normalização
 pelo integral da feromona.
 
+Uau! Funciona!
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Ants IBM GitHub:

@@ -23,8 +23,11 @@ normal_distribution<double> Normal(0.,1.);      //2.
 // Normal(mean,stddev)
 // Usage:
 // double number = Normal(generator);
-static double const Turn_off_random = 0.0;
+static double const Turn_off_random = .03;
 //  ^^^ 0. = No Random!
+
+//	Parameter for Regularizing Function
+static double const RegularizingEpsilon = 0.01;
 
 
 //////////////////////////////////////////////////////
@@ -52,7 +55,7 @@ static double const SensingAreaRadius = .4;         //  .5
 static double const SENSING_AREA_RADIUS = SensingAreaRadius / X_hat_in_cm;         //
 
 //  Sensing Area Half Angle
-static double const SensingAreaHalfAngle = Pi/3.5;         //
+static double const SensingAreaHalfAngle = Pi/3.;         //
 
 //  Converter quantidade de feromona numa taxa (velocidade sem espaço). Lambda é 1/(feromona * tempo).
 //  A quantidade padrão de feromona dá uma taxa de Lambda / t_hat.
@@ -65,7 +68,10 @@ static double const SensingAreaHalfAngle = Pi/3.5;         //
 //static double const Lambda = .5* (3./2.) *(1./(1. * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //  Lambda versao só com a media do integral
-static double const Lambda = .5* (3./2.) *(1./(SensingAreaHalfAngle * pow(SENSING_AREA_RADIUS,3.)));        //
+//static double const Lambda = .5* (3./2.) *(1./(SensingAreaHalfAngle * pow(SENSING_AREA_RADIUS,3.)));        //
+
+//	With Weber's Law, Lambda may be ~ 1 ??
+static double const Lambda = 1./SENSING_AREA_RADIUS;
 
 //////////////////////////////////////////////////////
 // End Ant parameters
@@ -318,6 +324,23 @@ double Radius(double X, double Y)
 /////////////////////////////////////////////////
 
 
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+//      Regularizing Function
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+double RegularizingFunction(double X)
+{
+    double aux =  pow(RegularizingEpsilon*RegularizingEpsilon
+				+X*X,0.5);
+    return aux;
+}
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+//      End Radius de vetor
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -330,6 +353,7 @@ double Radius(double X, double Y)
 double ForceX(double AntXpos,double  AntYpos,double  AntVelX, double  AntVelY)
 {
     double aux;
+	double auxX;
     double N = Norm(AntVelX,AntVelY);
     
     double A11 = sin(2.*SensingAreaHalfAngle)/2.
@@ -346,11 +370,20 @@ double ForceX(double AntXpos,double  AntYpos,double  AntVelX, double  AntVelY)
        + A11 * PheromoneGradientX(AntXpos,AntYpos) + A12 * PheromoneGradientY(AntXpos,AntYpos))
     ;
     
+	auxX = PheromoneConcentration(AntXpos,AntYpos)*SENSING_AREA_RADIUS*SENSING_AREA_RADIUS
+		* SensingAreaHalfAngle 
+		+ PheromoneGradientX(AntXpos,AntYpos) * (2./3.) * pow(SENSING_AREA_RADIUS,3.) 
+			* cos(Angle(AntVelX,AntVelY)) * sin(SensingAreaHalfAngle);
+	
+	auxX = RegularizingFunction(auxX);
+	
+	aux = aux/auxX;
+
+
     cout << "PheromoneConcentration="<<PheromoneConcentration(AntXpos,AntYpos) << endl;
     cout << "A11="<<A11 << endl;
     cout << "A12="<<A12 << endl;
     cout << "ForceX="<<aux << endl;
-
     
     return 1.*aux;
 }
@@ -358,6 +391,7 @@ double ForceX(double AntXpos,double  AntYpos,double  AntVelX, double  AntVelY)
 double ForceY(double AntXpos,double  AntYpos,double  AntVelX, double  AntVelY)
 {
     double aux;
+    double auxY;
     double N = Norm(AntVelX,AntVelY);
     
     double A22 = - sin(2.*SensingAreaHalfAngle)/2.
@@ -374,6 +408,16 @@ double ForceY(double AntXpos,double  AntYpos,double  AntVelX, double  AntVelY)
        + A21 * PheromoneGradientX(AntXpos,AntYpos) + A22 * PheromoneGradientY(AntXpos,AntYpos))
     ;
     
+	auxY = PheromoneConcentration(AntXpos,AntYpos)*SENSING_AREA_RADIUS*SENSING_AREA_RADIUS
+		* SensingAreaHalfAngle 
+		+ PheromoneGradientY(AntXpos,AntYpos) * (2./3.) * pow(SENSING_AREA_RADIUS,3.) 
+			* sin(Angle(AntVelX,AntVelY)) * sin(SensingAreaHalfAngle);
+	
+	auxY = RegularizingFunction(auxY);
+	
+	aux = aux/auxY;
+
+
     cout << "ForceY="<<aux << endl;
     cout << "A22="<<A22 << endl;
     cout << "A21="<<A21 << endl;
