@@ -9,10 +9,12 @@ echo "reset" >> plots.plt
 echo "set parametric" >> plots.plt
 echo "Generating gnuplot source code..."
 
-echo "set term png font \"arial,12\"  size 640, 640
+echo "set term png font \"arial,12\"  size 240, 840
 #unset xtics
 #unset ytics
-set output \"./Plots/AntPos.png\"  " >> plots.plt
+set title ''
+set output \"./Plots/AntPos.png\"
+" >> plots.plt
 echo "plot \"AntPos.txt"  >> plots.plt;
 
 #echo "Done"

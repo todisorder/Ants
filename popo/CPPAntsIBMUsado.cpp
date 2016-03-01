@@ -18,12 +18,12 @@ static double const Pi =  3.1415926535;
 static double const Ln2 = 0.6931471806;
 
 default_random_engine generator;
-normal_distribution<double> Normal(0.,1.);      //2.
+normal_distribution<double> Normal(0.,.5);      //Normal(0.,1.)
 //http://www.cplusplus.com/reference/random/normal_distribution/
 // Normal(mean,stddev)
 // Usage:
 // double number = Normal(generator);
-static double const Turn_off_random = 0.0;
+static double const Turn_off_random = .01;
 //  ^^^ 0. = No Random!
 
 //	Parameter for Regularizing Function
@@ -71,7 +71,7 @@ static double const SensingAreaHalfAngle = Pi/3.;         //
 //static double const Lambda = .5* (3./2.) *(1./(SensingAreaHalfAngle * pow(SENSING_AREA_RADIUS,3.)));        //
 
 //	With Weber's Law, Lambda may be ~ 1 ??
-static double const Lambda = 1./SENSING_AREA_RADIUS;
+static double const Lambda = 1.;         //10./SENSING_AREA_RADIUS;????
 
 //////////////////////////////////////////////////////
 // End Ant parameters
@@ -80,23 +80,36 @@ static double const Lambda = 1./SENSING_AREA_RADIUS;
 
 // tempo final
 //static double const TFINAL = 0.1;
-static double const delta_t = 0.01;   //     0.005
+static double const delta_t = 0.1;   //     0.005
 
 
 ////////////////////////////
 //  Definição do  Domínio
 ////////////////////////////
+// extremo inferior do intervalo em x (cm)
+static double const x_1_cm = -50.;
+
+// extremo superior do intervalo em x (cm)
+static double const x_2_cm = 50.;
+
+// extremo inferior do intervalo em y (cm)
+static double const y_1_cm =  -50.;
+
+// extremo superior do intervalo em y (cm)
+static double const y_2_cm = 50.;
+
 // extremo inferior do intervalo em x
-static double const x_1 = -50.;      //a_x
+static double const x_1 = x_1_cm / X_hat_in_cm;
 
 // extremo superior do intervalo em x
-static double const x_2 = 50.;       //b_x
+static double const x_2 = x_2_cm / X_hat_in_cm;
 
 // extremo inferior do intervalo em y
-static double const y_1 =  -50.;     //a_y
+static double const y_1 = y_1_cm / X_hat_in_cm;
 
 // extremo superior do intervalo em y
-static double const y_2 = 50.;       //b_y
+static double const y_2 = y_2_cm / X_hat_in_cm;
+
 ////////////////////////////
 // End Definição do  Domínio
 ////////////////////////////
@@ -130,8 +143,8 @@ int ChangedSide = 0;
 /////////////////////////////////////////////////
 void InitialPosition (double& Xini, double& Yini)
 {
-    Xini = -1.;
-    Yini = 0.;
+    Xini = -1.;     //-1.
+    Yini = 0.;      //0.
 }
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -372,18 +385,20 @@ double ForceX(double AntXpos,double  AntYpos,double  AntVelX, double  AntVelY)
     
 	auxX = PheromoneConcentration(AntXpos,AntYpos)*SENSING_AREA_RADIUS*SENSING_AREA_RADIUS
 		* SensingAreaHalfAngle 
-		+ PheromoneGradientX(AntXpos,AntYpos) * (2./3.) * pow(SENSING_AREA_RADIUS,3.) 
-			* cos(Angle(AntVelX,AntVelY)) * sin(SensingAreaHalfAngle);
+        + PheromoneGradientX(AntXpos,AntYpos) * (2./3.) * pow(SENSING_AREA_RADIUS,3.)
+        * cos(Angle(AntVelX,AntVelY)) * sin(SensingAreaHalfAngle)
+        + PheromoneGradientY(AntXpos,AntYpos) * (2./3.) * pow(SENSING_AREA_RADIUS,3.)
+        * sin(Angle(AntVelX,AntVelY)) * sin(SensingAreaHalfAngle);
 	
 	auxX = RegularizingFunction(auxX);
 	
 	aux = aux/auxX;
 
 
-    cout << "PheromoneConcentration="<<PheromoneConcentration(AntXpos,AntYpos) << endl;
-    cout << "A11="<<A11 << endl;
-    cout << "A12="<<A12 << endl;
-    cout << "ForceX="<<aux << endl;
+//    cout << "PheromoneConcentration="<<PheromoneConcentration(AntXpos,AntYpos) << endl;
+//    cout << "A11="<<A11 << endl;
+//    cout << "A12="<<A12 << endl;
+//    cout << "ForceX="<<aux << endl;
     
     return 1.*aux;
 }
@@ -408,21 +423,23 @@ double ForceY(double AntXpos,double  AntYpos,double  AntVelX, double  AntVelY)
        + A21 * PheromoneGradientX(AntXpos,AntYpos) + A22 * PheromoneGradientY(AntXpos,AntYpos))
     ;
     
-	auxY = PheromoneConcentration(AntXpos,AntYpos)*SENSING_AREA_RADIUS*SENSING_AREA_RADIUS
-		* SensingAreaHalfAngle 
-		+ PheromoneGradientY(AntXpos,AntYpos) * (2./3.) * pow(SENSING_AREA_RADIUS,3.) 
-			* sin(Angle(AntVelX,AntVelY)) * sin(SensingAreaHalfAngle);
+    auxY = PheromoneConcentration(AntXpos,AntYpos)*SENSING_AREA_RADIUS*SENSING_AREA_RADIUS
+    * SensingAreaHalfAngle
+    + PheromoneGradientX(AntXpos,AntYpos) * (2./3.) * pow(SENSING_AREA_RADIUS,3.)
+    * cos(Angle(AntVelX,AntVelY)) * sin(SensingAreaHalfAngle)
+    + PheromoneGradientY(AntXpos,AntYpos) * (2./3.) * pow(SENSING_AREA_RADIUS,3.)
+    * sin(Angle(AntVelX,AntVelY)) * sin(SensingAreaHalfAngle);
 	
 	auxY = RegularizingFunction(auxY);
 	
 	aux = aux/auxY;
 
 
-    cout << "ForceY="<<aux << endl;
-    cout << "A22="<<A22 << endl;
-    cout << "A21="<<A21 << endl;
-    cout << "Grad X = "<<PheromoneGradientX(AntXpos,AntYpos) << endl;
-    cout << "Grad Y = "<<PheromoneGradientY(AntXpos,AntYpos) << endl;
+//    cout << "ForceY="<<aux << endl;
+//    cout << "A22="<<A22 << endl;
+//    cout << "A21="<<A21 << endl;
+//    cout << "Grad X = "<<PheromoneGradientX(AntXpos,AntYpos) << endl;
+//    cout << "Grad Y = "<<PheromoneGradientY(AntXpos,AntYpos) << endl;
     
     return 1.*aux;
 }
@@ -476,16 +493,17 @@ void PrintInfo(double delta_t, string COMM, int tt){
     tempfile <<"#" << "\t" << COMM <<endl;
     tempfile <<"#" << "Iter: " << tt <<endl;
     tempfile << "------------------------------------------------------" << endl;
+    tempfile << "Space scale X_hat_in_cm (cm)       " << X_hat_in_cm << endl;
+    tempfile << "Time scale t_hat_in_seconds (sec)       " << t_hat_in_seconds << endl;
     tempfile << "Sensing Area Radius (cm)       " << SensingAreaRadius << endl;
     tempfile << "Sensing Area Radius (X_hat)    " << SENSING_AREA_RADIUS << endl;
     tempfile << "Sensing Half Angle             Pi/" << Pi/SensingAreaHalfAngle << endl;
     tempfile << "Lambda                         " << Lambda << endl;
     tempfile << "------------------------------------------------------" << endl;
-//    tempfile << "delta t (seconds) = " << delta_t * THatSec << endl;
-//    tempfile << "Tfinal (t hat) = " << tt*delta_t<< endl;
-//    tempfile << "Tfinal (seconds) = " << tt*delta_t * THatSec << endl;
-//    tempfile << "Tfinal (minutos) = " << tt*delta_t * THatSec / 60.<< endl;
-//    tempfile << "Tfinal (horas) = " << tt*delta_t * THatSec / 3600.<< endl;
+    tempfile << "delta t (seconds) = " << delta_t * t_hat_in_seconds << endl;
+    tempfile << "Tfinal (seconds) = " << tt*delta_t * t_hat_in_seconds << endl;
+    tempfile << "Tfinal (minutes) = " << tt*delta_t * t_hat_in_seconds / 60.<< endl;
+    tempfile << "Tfinal (hours) = " << tt*delta_t * t_hat_in_seconds / 3600.<< endl;
     tempfile << "------------------------------------------------------" << endl;
     
     tempfile << " " << endl;
@@ -614,8 +632,8 @@ void AntWalk (int tt, int icurrent, double& AntXposOld, double& AntYposOld, doub
 
     AntYposNew = AntYposOld + delta_t * (AntVelYNew);
     
-        cout << "AntVelXNew="<< AntVelXNew << endl;
-        cout << "AntVelYNew="<< AntVelYNew << endl;
+//        cout << "AntVelXNew="<< AntVelXNew << endl;
+//        cout << "AntVelYNew="<< AntVelYNew << endl;
     
     
     ////////////////////////////////////////////////////////
@@ -718,7 +736,7 @@ int main (void){
     string DIR2 = "./"+DIR+"/";
 
     
-
+    double TotalDistanceInCm = 0.;
     
     
 
@@ -734,8 +752,8 @@ int main (void){
     double AntVelYOld;
     InitialVelocity(AntVelXOld, AntVelYOld);
     
-    double RandomWalkVelX = 0.;
-    double RandomWalkVelY = 0.;
+//    double RandomWalkVelX = 0.;
+//    double RandomWalkVelY = 0.;
     
     ofstream AntPos(DIR2+"AntPos.txt");
     
@@ -752,7 +770,11 @@ int main (void){
     ofstream AntVelRadius(DIR2+"AntVelRadius.txt");
     
     AntVelRadius << Radius(AntVelXOld,AntVelYOld) << endl;
+
+    ofstream AntDistance(DIR2+"AntDistance.txt");
     
+    AntDistance << 0. <<"\t" << 0. << endl;
+
     /////////////////////////////
     // Ciclo em tempo
     /////////////////////////////
@@ -761,19 +783,20 @@ int main (void){
     for (int i=1; i<=tt; i++) {
         
         AntWalk (tt, i, AntXposOld, AntYposOld, AntVelXOld, AntVelYOld);
-//                cout <<"fora  "<< AntXposOld << endl;
+        
+        TotalDistanceInCm = TotalDistanceInCm + delta_t * Radius(AntVelXOld,AntVelYOld)*X_hat_in_cm;
         
         if (i%100 == 0) {   //1000
             cout << "Iter restantes: " << tt - i << endl;
             
-//            if (isnan(AntXposOld)) {
-//                cout <<  "NAN numa iter menor que "<< i << endl;
-//                system("osascript -e 'tell app \"System Events\" to display dialog \"Abort!!!\" with icon 0 with title \"Abort!\" '");
-//                system("sh plot-png.sh");
-//                isAbort = 1;
-//                //abort();
-//                break;
-//            }
+            //            if (isnan(AntXposOld)) {
+            //                cout <<  "NAN numa iter menor que "<< i << endl;
+            //                system("osascript -e 'tell app \"System Events\" to display dialog \"Abort!!!\" with icon 0 with title \"Abort!\" '");
+            //                system("sh plot-png.sh");
+            //                isAbort = 1;
+            //                //abort();
+            //                break;
+            //            }
             
         }
         if (ChangedSide == 1) {
@@ -784,16 +807,17 @@ int main (void){
         AntVel << AntVelXOld << "\t" << AntVelYOld << endl;
         AntVelAngle << Angle(AntVelXOld,AntVelYOld) << endl;
         AntVelRadius << Radius(AntVelXOld,AntVelYOld) << endl;
+        AntDistance << i*delta_t << "\t" << TotalDistanceInCm << endl;
     }
     /////////////////////////////
     // End Ciclo em tempo
     /////////////////////////////
-
+    
     
 
-    cout << "Tfinal  = " << tt*delta_t<< endl;
-    cout << "delta_t = " << delta_t<< endl;
-    cout << "Num Iter = " << tt << endl;
+//    cout << "Tfinal  = " << tt*delta_t<< endl;
+//    cout << "delta_t = " << delta_t<< endl;
+//    cout << "Num Iter = " << tt << endl;
 
     PrintInfo(delta_t,COMM,tt);
     
